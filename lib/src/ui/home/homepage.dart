@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:shopping_list/src/model/Product.dart';
+import 'package:shopping_list/src/model/Resource.dart';
 import 'package:shopping_list/src/ui/home/ShoppingListRepository.dart';
 import 'package:shopping_list/src/ui/home/bloc.dart';
 
@@ -36,28 +38,27 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Widget getView() {
-    return new StreamBuilder<HomePageState>(
+    return new StreamBuilder<Resource<ProductList>>(
         stream: bloc.state,
-        initialData: HomePageState(products: List<String>()),
         builder: (context, stream) {
           var state = stream.data;
           if (state.loading) {
             return new Center(child: CircularProgressIndicator());
           } else {
             return new ListView.builder(
-                itemCount: state.products.length,
+                itemCount: state.data.products.length,
                 itemBuilder: (context, int position) {
-              return getRow(state.products, position);
+              return getRow(state.data.products, position);
             });
           }
         });
   }
 
-  Widget getRow(List<String> products, int position) {
+  Widget getRow(List<Product> products, int position) {
     return Padding(
       padding: EdgeInsets.all(20.0),
       child: Text(
-          products[position],
+          products[position].name,
         style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14.0),
       ),
     );
