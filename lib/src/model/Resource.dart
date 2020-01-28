@@ -15,6 +15,6 @@ class Resource<T extends Equatable> extends Equatable {
 
   @override
   String toString() {
-    return data?.toString();
+    return 'Resource{loading: $loading, data: $data, error: $error}';
   }
 }
