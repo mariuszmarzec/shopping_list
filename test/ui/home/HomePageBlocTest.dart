@@ -36,5 +36,7 @@ void main() {
       Resource<ProductList>(data: ProductList([])),
       Resource<ProductList>(data: ProductList([Product("id", "product")]))
     ]));
+
+    verify(repository.load());
   });
 }

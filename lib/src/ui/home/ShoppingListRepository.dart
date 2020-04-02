@@ -10,12 +10,17 @@ abstract class ShoppingListRepository {
 
   Observable<Resource<ProductList>> load();
 
+  void add(Product product);
+
+  void remove(Product product);
+
   void close();
 }
 
 class ShoppingListRepositoryImpl extends ShoppingListRepository {
 
   final DataSource dataSource;
+  CompositeSubscription compositeSubscription = CompositeSubscription();
 
   ShoppingListRepositoryImpl(this.dataSource);
 
@@ -24,17 +29,35 @@ class ShoppingListRepositoryImpl extends ShoppingListRepository {
 
   @override
   Observable<Resource<ProductList>> load() {
-    var list = [new Product("1", "Carrot"), new Product("2", "water")];
-    _state.add(Resource(loading: true));
-    Future.delayed(const Duration(seconds: 2), () {
-      _state.add(Resource(data: ProductList(list)));
-    });
+    StreamSubscription<Resource<ProductList>> ss = dataSource.getAll()
+        .map((event) => Resource(data: event))
+        .startWith(Resource(loading: true))
+        .listen((event) { _state.add(event); });
+    compositeSubscription.add(ss);
     return _state;
   }
 
   @override
   void close() {
+    compositeSubscription.clear();
     _state.close();
   }
 
+  @override
+  void add(Product product) {
+    StreamSubscription<Resource<ProductList>> ss =
+    dataSource.add([product])
+        .map((event) => Resource(data: event))
+        .listen((event) { _state.add(event); });
+    compositeSubscription.add(ss);
+  }
+
+  @override
+  void remove(Product product) {
+    StreamSubscription<Resource<ProductList>> ss =
+    dataSource.remove([product.id])
+        .map((event) => Resource(data: event))
+        .listen((event) { _state.add(event); });
+    compositeSubscription.add(ss);
+  }
 }
