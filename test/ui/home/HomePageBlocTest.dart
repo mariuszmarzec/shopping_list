@@ -2,6 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:shopping_list/src/model/Product.dart';
+import 'package:shopping_list/src/model/ProductList.dart';
 import 'package:shopping_list/src/model/Resource.dart';
 import 'package:shopping_list/src/ui/home/ShoppingListRepository.dart';
 import 'package:shopping_list/src/ui/home/bloc.dart';

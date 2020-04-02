@@ -1,8 +1,9 @@
 import 'dart:async';
 
-import 'package:equatable/equatable.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:shopping_list/src/datasource/DataSource.dart';
 import 'package:shopping_list/src/model/Product.dart';
+import 'package:shopping_list/src/model/ProductList.dart';
 import 'package:shopping_list/src/model/Resource.dart';
 
 abstract class ShoppingListRepository {
@@ -13,6 +14,10 @@ abstract class ShoppingListRepository {
 }
 
 class ShoppingListRepositoryImpl extends ShoppingListRepository {
+
+  final DataSource dataSource;
+
+  ShoppingListRepositoryImpl(this.dataSource);
 
   final BehaviorSubject<Resource<ProductList>> _state = new BehaviorSubject<
       Resource<ProductList>>();
@@ -32,21 +37,4 @@ class ShoppingListRepositoryImpl extends ShoppingListRepository {
     _state.close();
   }
 
-}
-
-class ProductList extends Equatable {
-
-  final List<Product> products;
-
-  ProductList(this.products);
-
-  @override
-  List<Object> get props => [products];
-
-  @override
-  String toString() {
-    return products?.fold("", (prev, el) {
-      return prev + ", " + el.name;
-    });
-  }
 }

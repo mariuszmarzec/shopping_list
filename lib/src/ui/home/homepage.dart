@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:shopping_list/src/datasource/DataSource.dart';
 import 'package:shopping_list/src/model/Product.dart';
+import 'package:shopping_list/src/model/ProductList.dart';
 import 'package:shopping_list/src/model/Resource.dart';
 import 'package:shopping_list/src/ui/home/ShoppingListRepository.dart';
 import 'package:shopping_list/src/ui/home/bloc.dart';
@@ -14,7 +16,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final HomePageBloc bloc = HomePageBloc(ShoppingListRepositoryImpl());
+  final HomePageBloc bloc = HomePageBloc(ShoppingListRepositoryImpl(dataSource));
 
   @override
   void initState() {
