@@ -1,4 +1,5 @@
 import 'package:rxdart/rxdart.dart';
+import 'package:shopping_list/src/model/Product.dart';
 import 'package:shopping_list/src/model/ProductList.dart';
 import 'package:shopping_list/src/model/Resource.dart';
 import 'package:shopping_list/src/ui/home/ShoppingListRepository.dart';
@@ -25,5 +26,13 @@ class HomePageBloc {
   dispose() async {
     _repository.close();
     _state.close();
+  }
+
+  void check(Product product) {
+    _repository.markAsChecked(product);
+  }
+
+  void uncheck(Product product) {
+    _repository.markAsUnchecked(product);
   }
 }

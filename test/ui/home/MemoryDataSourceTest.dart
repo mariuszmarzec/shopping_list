@@ -40,6 +40,26 @@ void main() {
           ProductList([stubProduct(id: "1"), stubProduct(id: "2")]),
         ]));
   });
+
+  test('markAsChecked', () async {
+    dataSource.add(<Product>[stubProduct(id: "1")]);
+    dataSource.add(<Product>[stubProduct(id: "2")]);
+    await expectLater(
+        dataSource.markAsChecked("1"),
+        emitsInOrder(<ProductList>[
+          ProductList([stubProduct(id: "1", checked: true), stubProduct(id: "2")]),
+        ]));
+  });
+
+  test('markAsUnchecked', () async {
+    dataSource.add(<Product>[stubProduct(id: "1", checked: true)]);
+    dataSource.add(<Product>[stubProduct(id: "2")]);
+    await expectLater(
+        dataSource.markAsUnchecked("1"),
+        emitsInOrder(<ProductList>[
+          ProductList([stubProduct(id: "1", checked: false), stubProduct(id: "2")]),
+        ]));
+  });
 }
 
 Product stubProduct(
@@ -47,6 +67,8 @@ Product stubProduct(
     String name = "",
     String count = "",
     ProductUnit unit = ProductUnit.NONE,
-    ProductType type = ProductType.NONE}) {
-  return Product(id, name, count, unit, type);
+    ProductType type = ProductType.NONE,
+    bool checked = false}
+) {
+  return Product(id, name, count, unit, type, checked);
 }

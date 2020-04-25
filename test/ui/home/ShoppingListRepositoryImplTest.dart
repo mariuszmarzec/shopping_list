@@ -64,4 +64,41 @@ void main() {
     verify(dataSource.getAll());
     verify(dataSource.remove(["1"]));
   });
+
+  test('markAsChecked', () async {
+    when(dataSource.markAsChecked("1")).thenAnswer((realInvocation) => Observable.just(ProductList([
+      stubProduct(id: "1", checked: true),
+    ])));
+    var observable = repository.load();
+    repository.markAsChecked(stubProduct(id: "1"));
+
+    await expectLater(
+        observable,
+        emitsInOrder(<Resource<ProductList>>[
+          Resource<ProductList>(loading: true),
+          Resource<ProductList>(data : ProductList([stubProduct(id: "1")])),
+          Resource<ProductList>(data : ProductList([stubProduct(id: "1", checked: true)])),
+        ]));
+    verify(dataSource.getAll());
+    verify(dataSource.markAsChecked("1"));
+  });
+
+  test('markAsUnchecked', () async {
+    when(dataSource.markAsUnchecked("1")).thenAnswer((realInvocation) => Observable.just(ProductList([
+      stubProduct(id: "1", checked: false)
+    ])));
+    var observable = repository.load();
+    repository.markAsUnchecked(stubProduct(id: "1", checked: true));
+
+    await expectLater(
+        observable,
+        emitsInOrder(<Resource<ProductList>>[
+          Resource<ProductList>(loading: true),
+          Resource<ProductList>(data : ProductList([stubProduct(id: "1")])),
+          Resource<ProductList>(data : ProductList([stubProduct(id: "1", checked: true)])),
+        ]));
+
+    verify(dataSource.getAll());
+    verify(dataSource.markAsUnchecked("1"));
+  });
 }

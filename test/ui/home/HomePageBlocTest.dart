@@ -7,6 +7,8 @@ import 'package:shopping_list/src/model/Resource.dart';
 import 'package:shopping_list/src/ui/home/ShoppingListRepository.dart';
 import 'package:shopping_list/src/ui/home/bloc.dart';
 
+import 'MemoryDataSourceTest.dart';
+
 class MockShoppingListRepository extends Mock implements ShoppingListRepository {}
 
 void main() {
@@ -38,5 +40,17 @@ void main() {
     ]));
 
     verify(repository.load());
+  });
+
+  test('mark as checked', () async {
+    bloc.check(stubProduct(id: "1"));
+
+    verify(repository.markAsChecked(stubProduct(id: "1")));
+  });
+
+  test('mark as checked', () async {
+    bloc.uncheck(stubProduct(id: "1"));
+
+    verify(repository.markAsUnchecked(stubProduct(id: "1")));
   });
 }

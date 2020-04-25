@@ -16,7 +16,8 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final HomePageBloc bloc = HomePageBloc(ShoppingListRepositoryImpl(dataSource));
+  final HomePageBloc bloc = HomePageBloc(
+      ShoppingListRepositoryImpl(dataSource));
 
   @override
   void initState() {
@@ -44,25 +45,32 @@ class _MyHomePageState extends State<MyHomePage> {
         stream: bloc.state,
         builder: (context, stream) {
           var state = stream.data;
-          if (state.loading) {
+          if (state == null || state.loading) {
             return new Center(child: CircularProgressIndicator());
           } else {
             return new ListView.builder(
                 itemCount: state.data.products.length,
                 itemBuilder: (context, int position) {
-              return getRow(state.data.products, position);
-            });
+                  return getRow(state.data.products, position);
+                });
           }
         });
   }
 
   Widget getRow(List<Product> products, int position) {
-    return Padding(
-      padding: EdgeInsets.all(20.0),
-      child: Text(
-          products[position].name,
-        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14.0),
-      ),
+    var product = products[position];
+    return CheckboxListTile(
+      title: Text(product.name),
+      value: product.checked,
+      onChanged: (bool isChecked) {
+        setState(() {
+          if (isChecked) {
+            bloc.check(product);
+          } else {
+            bloc.uncheck(product);
+          }
+        });
+      },
     );
   }
 }

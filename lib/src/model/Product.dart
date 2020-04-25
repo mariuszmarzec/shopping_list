@@ -7,26 +7,29 @@ class Product extends Equatable {
   final String count;
   final ProductUnit unit;
   final ProductType type;
+  final bool checked;
 
   Product(
       this.id,
       this.name,
       [this.count = Constants.EMPTY,
       this.unit = ProductUnit.NONE,
-      this.type = ProductType.OTHER]);
+      this.type = ProductType.OTHER,
+      this.checked = false]);
 
   @override
   List<Object> get props => [id, name];
 
   @override
   String toString() {
-    return 'Product{id: $id, name: $name, count: $count, unit: $unit, type: $type}';
+    return 'Product{id: $id, name: $name, count: $count, unit: $unit, type: $type, checked: $checked}';
   }
 }
 
 enum ProductUnit { NONE, ITEM, KG, GRAM, LITER }
 
 enum ProductType {
+  FRUITS_AND_VEGETABLES,
   NONE,
   ALCOHOL,
   MEDICINE,

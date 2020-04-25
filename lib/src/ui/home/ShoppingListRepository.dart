@@ -14,6 +14,10 @@ abstract class ShoppingListRepository {
 
   void remove(Product product);
 
+  void markAsChecked(Product product);
+
+  void markAsUnchecked(Product product);
+
   void close();
 }
 
@@ -56,6 +60,24 @@ class ShoppingListRepositoryImpl extends ShoppingListRepository {
   void remove(Product product) {
     StreamSubscription<Resource<ProductList>> ss =
     dataSource.remove([product.id])
+        .map((event) => Resource(data: event))
+        .listen((event) { _state.add(event); });
+    compositeSubscription.add(ss);
+  }
+
+  @override
+  void markAsChecked(Product product) {
+    StreamSubscription<Resource<ProductList>> ss =
+    dataSource.markAsChecked(product.id)
+        .map((event) => Resource(data: event))
+        .listen((event) { _state.add(event); });
+    compositeSubscription.add(ss);
+  }
+
+  @override
+  void markAsUnchecked(Product product) {
+    StreamSubscription<Resource<ProductList>> ss =
+    dataSource.markAsUnchecked(product.id)
         .map((event) => Resource(data: event))
         .listen((event) { _state.add(event); });
     compositeSubscription.add(ss);
