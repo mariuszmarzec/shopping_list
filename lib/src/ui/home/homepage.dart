@@ -3,8 +3,11 @@ import 'package:shopping_list/src/datasource/DataSource.dart';
 import 'package:shopping_list/src/model/Product.dart';
 import 'package:shopping_list/src/model/ProductList.dart';
 import 'package:shopping_list/src/model/Resource.dart';
+import 'package:shopping_list/src/ui/add/AddProductPage.dart';
 import 'package:shopping_list/src/ui/home/ShoppingListRepository.dart';
 import 'package:shopping_list/src/ui/home/bloc.dart';
+
+import '../../Lang.dart';
 
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key key, this.title}) : super(key: key);
@@ -37,7 +40,19 @@ class _MyHomePageState extends State<MyHomePage> {
         appBar: new AppBar(
           title: new Text(widget.title),
         ),
-        body: getView());
+        body: getView(),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => AddProductPage(
+                title: lang.newProduct()
+            )),
+          );
+        },
+        child: Icon(Icons.add),
+        backgroundColor: Colors.green,
+      ),);
   }
 
   Widget getView() {
