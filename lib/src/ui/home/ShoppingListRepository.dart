@@ -10,9 +10,9 @@ abstract class ShoppingListRepository {
 
   Observable<Resource<ProductList>> load();
 
-  void add(Product product);
+  Observable<Resource<ProductList>> add(Product product);
 
-  void remove(Product product);
+  Observable<Resource<ProductList>> remove(Product product);
 
   void markAsChecked(Product product);
 
@@ -48,21 +48,17 @@ class ShoppingListRepositoryImpl extends ShoppingListRepository {
   }
 
   @override
-  void add(Product product) {
-    StreamSubscription<Resource<ProductList>> ss =
-    dataSource.add([product])
+  Observable<Resource<ProductList>> add(Product product) {
+    return dataSource.add([product])
         .map((event) => Resource(data: event))
-        .listen((event) { _state.add(event); });
-    compositeSubscription.add(ss);
+        .doOnEach((event) { _state.add(event.value); });
   }
 
   @override
-  void remove(Product product) {
-    StreamSubscription<Resource<ProductList>> ss =
-    dataSource.remove([product.id])
+  Observable<Resource<ProductList>> remove(Product product) {
+    return dataSource.remove([product.id])
         .map((event) => Resource(data: event))
-        .listen((event) { _state.add(event); });
-    compositeSubscription.add(ss);
+        .doOnEach((event) { _state.add(event.value); });
   }
 
   @override

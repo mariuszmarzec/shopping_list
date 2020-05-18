@@ -15,7 +15,7 @@ class HomePageBloc {
     _state.add(_initialState);
   }
 
-  Observable<Resource<ProductList>> get state => _state.stream;
+  Observable<Resource<ProductList>> get state => _state;
 
   load() async {
     _repository.load().listen((data) {

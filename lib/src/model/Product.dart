@@ -53,7 +53,7 @@ extension ProductUnitMapper on ProductUnit {
   }
 }
 
-enum ProductType {
+enum  ProductType {
   FRUITS_AND_VEGETABLES,
   ALCOHOL,
   MEDICINE,

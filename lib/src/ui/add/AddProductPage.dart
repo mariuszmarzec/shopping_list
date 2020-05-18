@@ -1,11 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:shopping_list/main.dart';
 import 'package:shopping_list/src/datasource/DataSource.dart';
 import 'package:shopping_list/src/model/Product.dart';
 import 'package:shopping_list/src/ui/home/ShoppingListRepository.dart';
 
 import '../../Lang.dart';
+import 'AddProductBloc.dart';
 
 class AddProductPage extends StatefulWidget {
   AddProductPage({Key key, this.title}) : super(key: key);
@@ -18,7 +20,7 @@ class AddProductPage extends StatefulWidget {
 
 class _AddProductPageState extends State<AddProductPage> {
   final AddProductBloc bloc =
-  AddProductBloc(ShoppingListRepositoryImpl(dataSource));
+      AddProductBloc(ShoppingListRepositoryImpl(dataSource), uuid);
 
   final _formKey = GlobalKey<FormState>();
 
@@ -49,58 +51,85 @@ class _AddProductPageState extends State<AddProductPage> {
   }
 
   Widget getView() {
+    return new StreamBuilder<AddProductState>(
+        stream: bloc.state,
+        initialData: bloc.initialState,
+        builder: (context, stream) {
+          AddProductState state = stream.data;
+          switch (state.step) {
+            case AddProductStep.EDIT:
+              return createView(state.product);
+              break;
+            case AddProductStep.ADDING_IN_PROGRESS:
+              return new Center(child: CircularProgressIndicator());
+              break;
+            case AddProductStep.SUCCESS:
+              break;
+          }
+          return Container();
+        });
+  }
+
+  Widget createView(Product product) {
     return Padding(
-      padding: EdgeInsets.all(16.0),
-        child:
-        Form(
+        padding: EdgeInsets.all(16.0),
+        child: Form(
             key: _formKey,
             child: Column(children: <Widget>[
               TextFormField(
+                initialValue: product.name,
                 decoration: InputDecoration(
                     labelText: lang.newProduct_ProductNameLabel()),
+                onChanged: (name) {bloc.setName(name);},
               ),
               Row(
                 children: <Widget>[
                   Expanded(
-                      child: TextFormField(
-                          keyboardType: TextInputType.number,
-                          decoration: InputDecoration(
-                              labelText: lang.newProduct_Count()))),
+                    child: TextFormField(
+                      initialValue: product.count,
+                      keyboardType: TextInputType.number,
+                      decoration:
+                          InputDecoration(labelText: lang.newProduct_Count()),
+                      onChanged: (count) {bloc.setCount(count);},
+                    ),
+                  ),
                   Spacer(),
-                  createDropDownUnit()
+                  createDropDownUnit(product)
                 ],
               ),
               Padding(
                 padding: EdgeInsets.symmetric(vertical: 16.0),
-                child: createDropDownType(),
+                child: createDropDownType(product),
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(vertical: 16.0),
+                child: RaisedButton(
+                    child: Text(lang.newProduct_AddButton()),
+                    onPressed: () {
+                      bloc.onAddButtonClick(() {
+                        Navigator.pop(context);
+                      });
+                    }),
               )
             ])));
   }
 
-  ProductUnit unit = ProductUnit.values.first;
-
-  DropdownButton createDropDownUnit() {
+  DropdownButton createDropDownUnit(Product product) {
     return DropdownButton<ProductUnit>(
-      value: unit,
+      value: product.unit,
       items: ProductUnit.values
           .map((item) => DropdownMenuItem<ProductUnit>(
                 value: item,
                 child: Text(item.toUnitString(showEmptyShort: false)),
               ))
           .toList(),
-      onChanged: (value) => {
-        setState(() {
-          unit = value;
-        })
-      },
+      onChanged: (value) => {bloc.setUnit(value)},
     );
   }
 
-  ProductType type = ProductType.values.first;
-
-  DropdownButton createDropDownType() {
+  DropdownButton createDropDownType(Product product) {
     return DropdownButton<ProductType>(
-      value: type,
+      value: product.type,
       isExpanded: true,
       items: ProductType.values
           .map((item) => DropdownMenuItem<ProductType>(
@@ -108,19 +137,7 @@ class _AddProductPageState extends State<AddProductPage> {
                 child: Text(item.toUnitString()),
               ))
           .toList(),
-      onChanged: (value) => {
-        setState(() {
-          type = value;
-        })
-      },
+      onChanged: (value) => {bloc.setType(value)},
     );
   }
-}
-
-class AddProductBloc {
-  final ShoppingListRepository _repository;
-
-  AddProductBloc(this._repository);
-
-  void dispose() {}
 }

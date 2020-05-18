@@ -26,9 +26,15 @@ class MemoryDataSourceImpl extends DataSource {
     Product("3", "Bułki", "1", ProductUnit.ITEM, ProductType.BREAD),
   ]);
 
+  final BehaviorSubject<ProductList> _state = new BehaviorSubject<ProductList>();
+
+  MemoryDataSourceImpl() {
+    _state.add(productList);
+  }
+
   @override
   Observable<ProductList> getAll() {
-    return Observable.just(productList);
+    return _state;
   }
 
   @override
@@ -36,6 +42,7 @@ class MemoryDataSourceImpl extends DataSource {
     var newList = List<Product>.from(productList.products);
     newList.addAll(products);
     productList = ProductList(newList);
+    _state.add(productList);
     return Observable.just(productList);
   }
 
@@ -46,6 +53,7 @@ class MemoryDataSourceImpl extends DataSource {
       return ids.contains(item.id);
     });
     productList = ProductList(newList);
+    _state.add(productList);
     return Observable.just(productList);
   }
 
@@ -64,6 +72,7 @@ class MemoryDataSourceImpl extends DataSource {
       }
     }).toList();
     productList = ProductList(products);
+    _state.add(productList);
     return Observable.just(productList);
   }
 

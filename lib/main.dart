@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:uuid/uuid.dart';
 import 'src/ui/home/homepage.dart';
 import 'src/Lang.dart';
+
+final uuid = Uuid();
 
 void main() => runApp(new MyApp());
 

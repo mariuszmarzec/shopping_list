@@ -36,6 +36,8 @@ abstract class Lang {
   String productType_fish();
   String productType_rtvAgd();
   String productType_sweetsSnacks();
+
+  String newProduct_AddButton() {}
 }
 
 class LangPL extends Lang {
@@ -148,6 +150,9 @@ class LangPL extends Lang {
 
   @override
   String productType_sweetsSnacks() => "Słodycze i przekąski";
+
+  @override
+  String newProduct_AddButton() => "Dodaj produkt";
 }
 
 Lang lang = new LangPL();
