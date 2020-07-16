@@ -19,8 +19,8 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final HomePageBloc bloc = HomePageBloc(
-      ShoppingListRepositoryImpl(dataSource));
+  final HomePageBloc bloc =
+      HomePageBloc(ShoppingListRepositoryImpl(dataSource));
 
   @override
   void initState() {
@@ -37,22 +37,22 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-        appBar: new AppBar(
-          title: new Text(widget.title),
-        ),
-        body: getView(),
+      appBar: new AppBar(
+        title: new Text(widget.title),
+      ),
+      body: getView(),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => AddProductPage(
-                title: lang.newProduct()
-            )),
+            MaterialPageRoute(
+                builder: (context) => AddProductPage(title: lang.newProduct())),
           );
         },
         child: Icon(Icons.add),
         backgroundColor: Colors.green,
-      ),);
+      ),
+    );
   }
 
   Widget getView() {
@@ -74,18 +74,30 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Widget getRow(List<Product> products, int position) {
     var product = products[position];
-    return CheckboxListTile(
-      title: Text(product.name),
-      value: product.checked,
-      onChanged: (bool isChecked) {
-        setState(() {
-          if (isChecked) {
-            bloc.check(product);
-          } else {
-            bloc.uncheck(product);
-          }
-        });
-      },
-    );
+    return new Row(children: [
+      Flexible(
+          child: CheckboxListTile(
+        title: Text(product.name),
+        value: product.checked,
+        onChanged: (bool isChecked) {
+          setState(() {
+            if (isChecked) {
+              bloc.check(product);
+            } else {
+              bloc.uncheck(product);
+            }
+          });
+        },
+      )),
+      GestureDetector(
+        onTap: () {
+          bloc.onRemoveButtonClick(product);
+        }, // handle your image tap here
+        child: Icon(
+          Icons.remove_shopping_cart,
+          size: 24.0,
+        ),
+      )
+    ]);
   }
 }

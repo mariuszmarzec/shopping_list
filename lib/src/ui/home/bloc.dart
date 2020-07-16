@@ -8,6 +8,7 @@ class HomePageBloc {
 
   final ShoppingListRepository _repository;
   final _initialState = Resource(data: ProductList([]));
+  CompositeSubscription _compositeSubscription = CompositeSubscription();
   final BehaviorSubject<Resource<ProductList>> _state = new BehaviorSubject<
       Resource<ProductList>>();
 
@@ -18,14 +19,25 @@ class HomePageBloc {
   Observable<Resource<ProductList>> get state => _state;
 
   load() async {
-    _repository.load().listen((data) {
-      _state.add(data);
-    });
+    _compositeSubscription.add(_repository.load().listen((data) {
+      if (data != null) {
+        _state.add(data);
+      }
+    }));
   }
 
   dispose() async {
+    _compositeSubscription.dispose();
     _repository.close();
     _state.close();
+  }
+
+  void onRemoveButtonClick(Product product) {
+    _compositeSubscription.add(
+        _repository.remove(product).listen((data) {
+          _state.add(data);
+        })
+    );
   }
 
   void check(Product product) {
