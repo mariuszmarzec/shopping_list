@@ -93,9 +93,12 @@ class _MyHomePageState extends State<MyHomePage> {
         onTap: () {
           bloc.onRemoveButtonClick(product);
         }, // handle your image tap here
-        child: Icon(
-          Icons.remove_shopping_cart,
-          size: 24.0,
+        child: Padding(
+          padding: EdgeInsets.all(16.0),
+          child: Icon(
+            Icons.remove_shopping_cart,
+            size: 24.0,
+          ),
         ),
       )
     ]);
