@@ -67,7 +67,7 @@ Product stubProduct(
     String name = "",
     String count = "",
     ProductUnit unit = ProductUnit.NONE,
-    ProductType type = ProductType.NONE,
+    ProductType type = ProductType.OTHER,
     bool checked = false}
 ) {
   return Product(id, name, count, unit, type, checked);

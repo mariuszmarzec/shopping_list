@@ -77,6 +77,7 @@ class _AddProductPageState extends State<AddProductPage> {
             key: _formKey,
             child: Column(children: <Widget>[
               TextFormField(
+                key: Key("productName"),
                 initialValue: product.name,
                 decoration: InputDecoration(
                     labelText: lang.newProduct_ProductNameLabel()),
